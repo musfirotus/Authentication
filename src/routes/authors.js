@@ -5,7 +5,9 @@ const AuthorController = require('../controllers/authorController');
 
 router
     .get('/', AuthorController.getAuthors)
-    .post('/', AuthorController.saveAuthor)
     .get('/:id', AuthorController.getAuthor)
+    .post('/', AuthorController.saveAuthor)
+    .delete('/del/:id', AuthorController.deleteAuthor)
+    .patch('/:id', AuthorController.updateAuthor)
 
 module.exports = router;

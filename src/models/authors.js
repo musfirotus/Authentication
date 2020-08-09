@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      authors.hasMany(models.posts, {foreignKeyConstraint: true});
+      authors.hasMany(models.comments, {foreignKeyConstraint: true});
     }
   };
   authors.init({

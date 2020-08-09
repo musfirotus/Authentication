@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const Author = require('./authors')
 module.exports = (sequelize, DataTypes) => {
   class comments extends Model {
     /**
@@ -11,6 +12,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      comments.belongsTo(models.authors, {foreignKey: comments.authorId});
+      comments.belongsTo(models.posts, {foreignKey: comments.postId});
     }
   };
   comments.init({

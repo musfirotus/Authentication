@@ -12,13 +12,15 @@ module.exports = {
         type: Sequelize.STRING
       },
       content: {
-        type: Sequelize.TEXT
+        type: Sequelize.STRING
+      },
+      tags: {
+        type: Sequelize.STRING
       },
       status: {
         type: Sequelize.STRING
       },
       authorId: {
-        allowNull: false,
         type: Sequelize.INTEGER
       },
       createdAt: {

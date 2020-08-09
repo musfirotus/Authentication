@@ -11,11 +11,16 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      posts.hasMany(models.comments, {
+        foreignKey: "postId"
+      });
+      posts.belongsTo(models.authors, { foreignKey: "id", foreignKeyConstraint: false });
     }
   };
   posts.init({
     title: DataTypes.STRING,
-    content: DataTypes.TEXT,
+    content: DataTypes.STRING,
+    tags: DataTypes.STRING,
     status: DataTypes.STRING,
     authorId: DataTypes.INTEGER
   }, {

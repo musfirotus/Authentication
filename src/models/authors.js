@@ -11,8 +11,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      authors.hasMany(models.posts, {foreignKeyConstraint: true});
-      authors.hasMany(models.comments, {foreignKeyConstraint: true});
+      authors.hasMany(models.posts, {
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      });
+      authors.hasMany(models.comments, {
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      });
     }
   };
   authors.init({

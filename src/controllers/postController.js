@@ -62,12 +62,12 @@ class PostController {
             if (postdetail) {
                 response.status = true;
                 response.data = postdetail;
-                response.message = "Data found!";
+                response.message = "Data ditemukan!";
                 res.status(200).json(response);
             } else {
                 response.data = '';
                 response.status = false;
-                response.message = "Data not found!";
+                response.message = "Data tidak ditemukan!";
                 res.status(400).json(response);
             }
         } catch (error) {

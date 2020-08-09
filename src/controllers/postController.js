@@ -1,25 +1,38 @@
-const { posts } = require("../models");
+const { posts, comments, authors } = require("../models");
 
 const response = {
   status: false,
   message: "",
   data: [],
 };
+const attAuthor = ['username', 'email', 'profile'];
+const attPost = ['title', 'content', 'tags', 'status'];
+const attComment = ['content', 'status', 'email', 'url'];
 
 class PostController {
 
     static async getPosts(req, res){
         try {
-            const findposts = await posts.findAll({});
+            const findposts = await posts.findAll({
+                attributes: attPost,
+                include: [{
+                    model: authors,
+                    attributes: attAuthor,
+                    include: [{
+                        model: comments,
+                        attributes: attComment,
+                    }]
+                }]
+            });
             if (findposts.length !== 0) {
                 response.data = findposts;
                 response.status = true;
-                response.message = "Data found!"
+                response.message = "Data ditemukan!"
                 res.status(200).json(response);
             } else {
                 response.data = '';
                 response.status = false;
-                response.message = "Data not found!";
+                response.message = "Data tidal ditemukan!";
                 res.status(400).json(response);
             }
         } catch (err) {
@@ -32,8 +45,18 @@ class PostController {
 
     static async getPost(req, res) {
         const { id } = req.params;
-        const postdetail = await posts.findByPk(id
-        //   {include: post}
+        const postdetail = await posts.findByPk(
+            id, {
+                attributes: attPost,
+                include: [{
+                    model: authors,
+                    attributes: attAuthor,
+                    include: [{
+                        model: comments,
+                        attributes: attComment
+                    }] 
+                }]
+            }
         );
         try {
             if (postdetail) {
@@ -66,12 +89,17 @@ class PostController {
             });
             response.status = true;
             response.message = "Berhasil tambah data"
-            response.data = savePost;
+            response.data = {
+                Title: savePost.title,
+                Content: savePost.content,
+                Tags: savePost.tags,
+                Status: savePost.status
+            };
             res.status(201).json(response);
         } catch (error) {
             response.data = '';
             response.status = false;
-            response.message = error.message;
+            response.message = "ID author tidak ditemukan!";
             res.status(400).json(response);
         }
     }
@@ -79,18 +107,25 @@ class PostController {
     static async updatePost(req, res) {
         const { id } = req.params;
         const { title, content, tags, status, authorId } = req.body;
-        const auth = await posts.update({ title, content, tags, status, authorId },
-        {
-            where: {
-                id: id
-            }
-        });
+        const pos = await posts.update({ title, content, tags, status, authorId },
+        { where: { id: id } });
 
         try {
-            if (auth) {
+            if (pos) {
                 response.status = true
-                response.message = `Data post berhasil diedit`;
-                response.data = await posts.findByPk(id);
+                response.message = `Data post berhasil diubah`;
+                response.data = await posts.findByPk(
+                    id, {
+                        attributes: attPost,
+                        include: [{
+                            model: authors,
+                            attributes: attAuthor,
+                            include: [{
+                                model: comments,
+                                attributes: attComment
+                            }] 
+                        }]
+                });
                 res.status(200).json(response);
             } else {
                 response.data = '';

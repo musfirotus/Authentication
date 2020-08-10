@@ -9,6 +9,9 @@ const routeAuthor = require('./src/routes/authors')
 const routePost = require('./src/routes/posts')
 const routeComment = require('./src/routes/comments')
 const routeJwt = require('./src/routes/jwts')
+const dotenv = require('dotenv')
+
+dotenv.config();
 
 app.use(
     bodyParser.urlencoded({

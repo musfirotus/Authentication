@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
+const verify = require('../middleware/verifyToken')
 
 const AuthorController = require('../controllers/authorController');
 
 router
-    .get('/', AuthorController.getAuthors)
-    .get('/:id', AuthorController.getAuthor)
-    .post('/', AuthorController.saveAuthor)
-    .delete('/del/:id', AuthorController.deleteAuthor)
-    .patch('/:id', AuthorController.updateAuthor)
+    .get('/', verify, AuthorController.getAuthors)
+    .get('/:id', verify, AuthorController.getAuthor)
+    .post('/', verify, AuthorController.saveAuthor)
+    .delete('/del/:id', verify, AuthorController.deleteAuthor)
+    .patch('/:id', verify, AuthorController.updateAuthor)
 
 module.exports = router;

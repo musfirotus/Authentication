@@ -1,5 +1,6 @@
 const { authors, posts, comments } = require("../models");
-const { registerValidation } = require("../../validation")
+const { registerValidation } = require("../../validation");
+const bcrypt = require("bcryptjs");
 
 const response = {
   status: false,
@@ -16,7 +17,7 @@ class LoginController {
     }
 
     static async register(req, res) {
-      const { username, password, email } = req.body;
+      const { username, password, email, salt } = req.body;
 
       // validate before become author
       const { error } = registerValidation(req.body);
@@ -27,18 +28,22 @@ class LoginController {
 
       // Check if it existing author's username
       const usernameExist = await authors.findOne({ where: { username: username } })
+
+      // Hash passwords
+      const salted = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salted);
       
       try {
         if (usernameExist) res.status(404).json('Username already exists')
         else if (emailExist) res.status(404).send('Email already exists')
         else {
           const savedAuthor = await authors.create({
-            username, password, email
+            username, password, email, salt: hashedPassword
           });
           response.data = {
             Username: savedAuthor.username,
-            Password: savedAuthor.password,
-            email: savedAuthor.email
+            Salt: savedAuthor.salt,
+            Email: savedAuthor.email,
           };
           response.status = true;
           response.message = "Berhasil tambah data"
